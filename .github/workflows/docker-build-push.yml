@@ -1,0 +1,65 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout kode dari repository
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      # Setup Docker Buildx untuk build multi-platform
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Login ke Docker Hub menggunakan credentials dari repository secrets
+      - name: Login ke Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Setup Node.js (menggunakan versi yang sesuai)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      # install bun
+      - name: Setup Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies using Bun
+        run: bun install
+
+      # Jalankan prisma generate
+      - name: Run Prisma Generate
+        run: bunx prisma generate
+
+      # Extract metadata untuk Docker image
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/torikeshi-backend
+          tags: |
+            type=raw,value=v.1.0.0
+            type=sha
+
+      # Build dan push Docker image
+      - name: Build dan Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
