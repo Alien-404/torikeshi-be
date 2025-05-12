@@ -20,7 +20,9 @@ export const honoConfig = (app: Hono) => {
         'http://localhost:3000',
         'http://localhost:8080',
         'http://localhost:8000',
+        'https://torikeshi.rinaru.com/',
         'https://torikeshi.rinaru.com',
+        'http://torikeshi.rinaru.com',
       ],
     })
   );
