@@ -1,0 +1,30 @@
+{
+  "name": "torikeshi",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prisma": "^6.7.0"
+  },
+  "scripts": {
+    "dev": "bun --watch index.ts",
+    "start": "bunx prisma migrate deploy && bun run prisma/seed.ts; bun run db:status && bun run index.ts",
+    "seed": "bun run prisma/seed.ts",
+    "db:init": "bunx prisma migrate dev --name init",
+    "db:prod": "bunx prisma migrate deploy",
+    "db:dev": "bunx prisma db push --accept-data-loss",
+    "db:status": "bunx prisma migrate status"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "@prisma/client": "^6.0.0",
+    "hono": "^4.6.12",
+    "hono-rate-limiter": "^0.4.0",
+    "moment-timezone": "^0.5.48",
+    "winston": "^3.17.0",
+    "zod": "^3.23.8"
+  }
+}

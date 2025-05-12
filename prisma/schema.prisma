@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "linux-musl", "linux-arm64-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  orders Order[]
+}
+
+model Order {
+  id                           String    @id @default(cuid())
+  orderId                      String    @unique
+  orderStatus                  String
+  orderSubstatus               String
+  cancelationReturnType        String
+  normalOrPreOrder             String
+  skuId                        String
+  sellerSku                    String?
+  productName                  String
+  variation                    String
+  quantity                     Int
+  skuQuantityOfReturn          Int
+  skuUnitOriginalPrice         Int
+  skuSubtotalBeforeDiscount    Int
+  skuPlatformDiscount          Int
+  skuSellerDiscount            Int
+  skuSubtotalAfterDiscount     Int
+  shippingFeeAfterDiscount     Int
+  originalShippingFee          Int
+  shippingFeeSellerDiscount    Int
+  shippingFeePlatformDiscount  Int
+  paymentPlatformDiscount      Int
+  buyerServiceFee              Int
+  handlingFee                  Int
+  shippingInsurance            Int
+  itemInsurance                Int
+  orderAmount                  Int
+  orderRefundAmount            Int
+  createdTime                  DateTime?
+  paidTime                     DateTime?
+  rtsTime                      DateTime?
+  shippedTime                  DateTime?
+  deliveredTime                DateTime?
+  cancelledTime                DateTime?
+  cancelBy                     String?
+  cancelReason                 String?
+  fulfillmentType              String
+  warehouseName                String
+  trackingId                   String
+  deliveryOption               String
+  shippingProviderName         String
+  buyerMessage                 String?
+  buyerUsername                String
+  recipient                    String
+  phone                        String
+  zipcode                      String?
+  country                      String
+  province                     String
+  regencyAndCity               String
+  districts                    String
+  villages                     String
+  detailAddress                String
+  additionalAddressInformation String?
+  paymentMethod                String
+  weight                       Float
+  productCategory              String
+  packageId                    String
+  purchaseChannel              String
+  sellerNote                   String?
+  checkedStatus                String
+  checkedMarkedBy              String?
+  tokopediaInvoiceNumber       String?
+  currentStatus                Status    @default(canceled)
+  note                         String
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
+
+  // relations
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+enum Status {
+  canceled
+  claimed
+  processing
+  pending
+  resolved
+}
