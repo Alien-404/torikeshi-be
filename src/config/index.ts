@@ -2,7 +2,7 @@ import { logger } from '@common/logger';
 
 export const config = {
   // prep
-  PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 8080,
+  PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 8101,
   PASSWORD_ADMIN: process.env.PASSWORD_ADMIN as string,
 
   // jwt
